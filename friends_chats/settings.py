@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'photocomments',
     'videos',
     'likevideos',
+    'videocomments',
     
 ]
 SITE_ID = 1
