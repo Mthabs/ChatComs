@@ -52,7 +52,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'DEV' in os.environ
 
-ALLOWED_HOSTS = ['8000-mthabs-chatcoms-n0f5pu7bqs5.ws-eu108.gitpod.io']
+ALLOWED_HOSTS = ['8000-mthabs-chatcoms-n0f5pu7bqs5.ws-eu108.gitpod.io','chatcomdrfapi-40ddf4304b07.herokuapp.com']
 
 
 # Application definition
