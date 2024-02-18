@@ -2,7 +2,7 @@ from django.db.models import Count
 from django.db import models
 from django.contrib.auth.models import User
 from followers.models import Follower
-#from friends.models import Friend
+from friends.models import Friend
 
 class UserProfile(models.Model):
     owner = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userprofile')
