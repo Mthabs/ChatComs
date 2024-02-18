@@ -1,7 +1,7 @@
 from django.db.models import Count
 from django.db import models
 from django.contrib.auth.models import User
-#from followers.models import Follower
+from followers.models import Follower
 #from friends.models import Friend
 
 class UserProfile(models.Model):
