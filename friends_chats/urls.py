@@ -30,4 +30,5 @@ urlpatterns = [
     path('', include('photos.urls')),
     path('', include('likephotos.urls')),
     path('', include('photocomments.urls')),
+    path('', include('videos.urls')),
 ]
