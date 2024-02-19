@@ -16,4 +16,4 @@ class FollowerSerializer(serializers.ModelSerializer):
         try:
             return super().create(validated_data)
         except IntegrityError:
-            raise serializers.ValidationError({'error': 'You are already following.'})
+            raise serializers.ValidationError({'error': 'You are already following this user.'})
