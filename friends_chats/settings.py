@@ -109,6 +109,12 @@ if 'CLIENT_ORIGIN_DEV' in os.environ:
     CORS_ALLOWED_ORIGIN_REGEXES = [
         rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
     ]
+
+CORS_ALLOWED_ORIGINS = [
+    "https://chatscomms-9973f48635e9.herokuapp.com/",
+    # Add other allowed origins as needed
+]
+
 CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'friends_chats.urls'
