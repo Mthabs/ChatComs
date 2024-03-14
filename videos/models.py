@@ -5,7 +5,7 @@ from likevideos.models import Likevideo
 class Video(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255,blank=True)
-    video_file = models.FileField(upload_to='videos/')
+    video_file = models.FileField(upload_to='videos/media')
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
