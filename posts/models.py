@@ -16,7 +16,7 @@ class Post(models.Model):
     ]
     header = models.CharField(max_length=255, blank=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
-    post_picture = models.ImageField(upload_to='post_images/', null=True, blank=True)
+    post_picture = models.ImageField(upload_to='posts/media', blank=True)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
