@@ -17,9 +17,6 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['id', 'profile_id', 'owner', 'header', 'content','like_id', 'created_at', 'updated_at','profile_picture', 'post_picture', 'is_owner', 'image_filter','like_count', 'comment_count']
-        extra_kwargs = {
-            'post_picture': {'required': False},  # Make the image field optional
-        }
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
