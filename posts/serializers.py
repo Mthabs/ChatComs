@@ -3,6 +3,7 @@ from PIL import Image
 from rest_framework import serializers
 from likes.models import Like
 from comments.models import Comment
+import cloudinary.uploader
 
 class PostSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
