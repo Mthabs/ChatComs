@@ -3,6 +3,7 @@ from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError as DjangoValidationError
 from .models import Video
 from .models import Likevideo
+import cloudinary.uploader
 
 class VideoSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
