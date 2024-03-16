@@ -59,7 +59,8 @@ REST_AUTH_SERIALIZERS = {
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'DEV' in os.environ
+# DEBUG = 'DEV' in os.environ
+DEBUG = True
 
 ALLOWED_HOSTS = ['8000-mthabs-chatcoms-yfh6dmmi0lt.ws-eu110.gitpod.io','chatcom-ec4ad238849d.herokuapp.com','127.0.0.1','chatcomdrfapi-40ddf4304b07.herokuapp.com']
 CORS_ALLOWED_ORIGINS = [
