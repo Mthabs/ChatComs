@@ -1,73 +1,51 @@
 from rest_framework import serializers
-from .models import UserProfile
-from followers.models import Follower
-from friends.models import Friend
+from profiles.models import UserProfile
+from friends.models import UserFollowing
+
+
+class CreateUserProfileSerialzier(serializers.ModelSerializer):
+    """
+    ModelSerializer instance to Create Userprofile details
+    """
+    class Meta:
+        model = UserProfile
+        fields = "__all__"
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
-    is_owner = serializers.SerializerMethodField()
-    following_id = serializers.SerializerMethodField()
-    friendship_id = serializers.SerializerMethodField()
+    """
+    ModelSerializer instance to Fetch Userprofile details
+    """
+    username = serializers.ReadOnlyField(source='user.username')
+    profile_picture = serializers.SerializerMethodField()
+    cover_photo = serializers.SerializerMethodField()
     posts_count = serializers.SerializerMethodField()
     followers_count = serializers.SerializerMethodField()
     following_count = serializers.SerializerMethodField()
-    friends_count = serializers.SerializerMethodField()
 
     class Meta:
         model = UserProfile
-        fields = ['id', 'owner', 'created_at', 'updated_at', 'name', 'content','is_owner', 'profile_picture', 'cover_photo', 'posts_count', 'following_id', 'friendship_id', 'followers_count', 'following_count', 'friends_count']
+        fields = ['id', 'user', 'username', 'profile_picture', 'cover_photo' 'posts_count', 'follower_count', 'following_count' ]
 
-    def to_representation(self, instance):
-        if isinstance(instance, UserProfile):
-            representation = super().to_representation(instance)
-            default_profile_picture_url = 'https://res.cloudinary.com/dnt7oro5y/image/upload/v1702078965/default_profile_yansvo.jpg'
-            default_cover_photo_url = 'https://res.cloudinary.com/dnt7oro5y/image/upload/v1702078965/default_profile_ifketo.jpg'
-                
-            if not instance.profile_picture:
-                representation['profile_picture'] = default_profile_picture_url
-
-            if not instance.cover_photo:
-                representation['cover_photo'] = default_cover_photo_url
-
-            return representation
-        return {}
-
-    def get_is_owner(self, obj):
-        if isinstance(obj, UserProfile):
-            request = self.context.get('request')
-            return request.user == obj.owner
-        return False
-
-    def get_following_id(self, obj):
-        if isinstance(obj, UserProfile):
-            user = self.context['request'].user
-            try:
-                following = Follower.objects.get(owner=user, followed=obj.owner)
-                return following.id
-            except Follower.DoesNotExist:
-                return None
-        return None
-
-    def get_friendship_id(self, obj):
-        if isinstance(obj, UserProfile):
-            user = self.context['request'].user
-            try:
-                friendship = Friend.objects.get(
-                    owner=user, friend=obj.owner
-                )
-                return friendship.id
-            except Friend.DoesNotExist:
-                return None
-        return None
-
-    def get_posts_count(self, obj):
-        return obj.owner.posts.all().count()
+    def get_profile_picture(self, obj):
+        if obj.profile_picture:
+            return obj.profile_picture
+        else:
+            #Freepik free to use picture
+            return 'https://img.freepik.com/free-vector/illustration-businessman_53876-5856.jpg?w=740&t=st=1710659219~exp=1710659819~hmac=996a852ae757087525e6f08777ed883706c97f6f0ac40fcf9cf72d63d320cd67'
+    
+    def get_cover_photo(self, obj):
+        if obj.cover_photo:
+            return obj.cover_photo
+        else:
+            return 'https://images.unsplash.com/photo-1505533321630-975218a5f66f?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
 
     def get_followers_count(self, obj):
-        return Follower.objects.filter(followed=obj.owner).count()
+        request = self.context.get('request')
+        return UserFollowing.objects.filter(user=request.user).count()
 
     def get_following_count(self, obj):
-        return Follower.objects.filter(owner=obj.owner).count()
-
-    def get_friends_count(self, obj):
-        return Friend.objects.filter(owner=obj.owner).count()
+        request = self.context.get('request')
+        return UserFollowing.objects.filter(follower=request.user).count()
+    
+    # def get_posts_count(self, obj):
+    #     return obj.owner.posts.all().count()

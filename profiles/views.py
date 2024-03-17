@@ -1,56 +1,41 @@
-from django.db.models import Count
-from rest_framework import generics, permissions, filters
-from friends_chats.permissions import IsOwnerOrReadOnly
-from .models import UserProfile
-from .serializers import UserProfileSerializer
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from django.shortcuts import get_object_or_404
 
-class UserProfileListCreateView(generics.ListCreateAPIView):
+from profiles.models import UserProfile
+from profiles.serializers import UserProfileSerializer, CreateUserProfileSerialzier
+
+
+class UserProfileView(APIView):
+    """
+    Instance of APIView to Manage User Profile
+    """
     serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        userprofile = self.fetch_userprofile(request)
+        serializer = UserProfileSerializer(userprofile)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def fetch_userprofile(self, request):
+        return get_object_or_404(UserProfile, user=request.user)
     
-    filter_backends = [
-        filters.OrderingFilter,
-        filters.SearchFilter,
-    ]
-    search_fields = [
-        'owner__username',
-        'name',
-        'content',
-    ]
-    ordering_fields = [
-        'posts_count',
-        'followers_count',
-        'following_count',
-        'friends_count',
-        'owner__following__created_at',
-        'owner__followed__created_at',
-    ]
+class CreateUserProfile(APIView):
+    """
+    Instance of APIView to Create User Profile
+    """
+    serializer_class = CreateUserProfileSerialzier
+    permission_classes = [AllowAny]
 
-    def get_queryset(self):
-        queryset = UserProfile.objects.annotate(
-            posts_count=Count('owner__posts', distinct=True),
-            followers_count=Count('owner__following', distinct=True),  
-            following_count=Count('owner__followed', distinct=True),
-            friends_count=Count('owner__friendships', distinct=True)    
-        )
-        return queryset
-
-    def perform_create(self, serializer):
-        user = self.request.user
-        existing_profile = UserProfile.objects.filter(owner=user).first()
-        if existing_profile:
-            serializer.update(existing_profile, serializer.validated_data)
-        else:
-            serializer.save(owner=user)
-
-
-class UserProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsOwnerOrReadOnly]
-    serializer_class = UserProfileSerializer 
-    def get_queryset(self):
-        queryset = UserProfile.objects.annotate(
-            posts_count=Count('owner__posts', distinct=True),
-            followers_count=Count('owner__following', distinct=True),  
-            following_count=Count('owner__followed', distinct=True),
-            friends_count=Count('owner__friendships', distinct=True)   
-        )
-        return queryset
+    def post(self, request):
+        try:
+            serializer = self.serializer_class(data=request.data)
+            if(serializer.is_valid(raise_exception=True)):
+                serializer.save()
+                return Response( serializer.data, status=status.HTTP_201_CREATED )
+        except Exception as exc:
+            return Response ({"message": f"Error occured {str(exc).strip("\n")}"}, status=status.HTTP_400_BAD_REQUEST)
+        
