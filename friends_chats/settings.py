@@ -100,19 +100,10 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "dj_rest_auth.registration",
     "corsheaders",
+    #User APPS
     "profiles",
     "posts",
-    "followers",
     "friends",
-    "photos",
-    "videos",
-    "likes",
-    "likephotos",
-    "likevideos",
-    "comments",
-    "photocomments",
-    "videocomments",
-    # api endpoints
     "drf_yasg",
 ]
 SITE_ID = 1
