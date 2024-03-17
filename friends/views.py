@@ -52,7 +52,7 @@ class ManageFollowingView(APIView):
         return Response(data, status=status.HTTP_200_OK)
     
     def post(self, request, fk):
-        friend_instance = self.fetch_userprofile(self, fk)
+        friend_instance = self.fetch_userprofile(fk)
         try:
             instance = UserFollowing.objects.create(user=friend_instance, follower=request.user)
             return Response({"message": "Following Request is sent"})
