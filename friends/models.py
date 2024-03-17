@@ -1,14 +1,27 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
 
-class Friend(models.Model):
-    owner = models.ForeignKey(User, related_name='friendships', on_delete=models.CASCADE)
-    friend = models.ForeignKey(User, related_name='friend', on_delete=models.CASCADE)
+from profiles.models import UserProfile
+
+
+FOLLOWER_STATUS = [
+    ("requested", "Following Requested"),
+    ("accepted", "Follower"),
+]
+class UserFollowing(models.Model):
+    user = models.ForeignKey(UserProfile, related_name='User', on_delete=models.CASCADE)
+    follower = models.ForeignKey(UserProfile, related_name='follower', on_delete=models.CASCADE)
+    status = models.CharField(_("Following status"), max_length=50, choices=FOLLOWER_STATUS)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-created_at']
-        unique_together = ['owner', 'friend']
+        unique_together = ['user', 'follower']
+    
+    def save(self, *args, **kwargs):
+        if not self.status:
+            self.status="requested"
+        super(UserFollowing, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.owner} is friends with {self.friend}'
+        return f'{self.follower} is following {self.user}'
