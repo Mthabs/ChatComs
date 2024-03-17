@@ -1,7 +1,6 @@
-from django.db.models import Count
 from django.db import models
 from django.contrib.auth.models import User
-from followers.models import Follower
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userprofile')
