@@ -9,18 +9,18 @@ class PostAdmin(admin.ModelAdmin):
     list_filter = ['user',]
 
 
-@admin.regiser(PostMedia)
+@admin.register(PostMedia)
 class PostMediaAdmin(admin.ModelAdmin):
     readonly_fields = ['image', 'video']
 
 
-@admin.regiser(Comments)
+@admin.register(Comments)
 class CommentsAdmin(admin.ModelAdmin):
     fields = ['post', 'user', 'comment', 'created_at']
     list_display = ['id', 'post', 'user', 'comment', 'created_at']
 
 
-@admin.regiser(likes)
+@admin.register(likes)
 class likesAdmin(admin.ModelAdmin):
     fields = ['post', 'user',  'created_at']
     list_display = ['id', 'post', 'user', 'created_at']
