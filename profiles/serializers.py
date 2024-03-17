@@ -56,3 +56,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def fetch_userprofile(self):
         request = self.context.get('request')
         return get_object_or_404(UserProfile, user=request.user)
+    
+
+class CompactUserProfileSerializer(serializers.ModelSerializer):
+    """
+    Serializer to load userdetails for comments and likes
+    """
+    class Meta:
+        model = UserProfile
+        fields = ['id', 'user', 'profile_picture']
