@@ -1,34 +1,55 @@
-from django.db.models import Count
-from rest_framework import generics, permissions, filters
-from friends_chats.permissions import IsOwnerOrReadOnly
-from .models import Post
-from .serializers import PostSerializer
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404, get_list_or_404
 
-class PostListView(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
-    queryset = Post.objects.all()
+from posts.serializers import PostSerializer
+from posts.models import Post
+from profiles.models import UserProfile
+
+
+class PostView(APIView):
+    """
+    APIView Instance to a
+    """
+    permission_classes = [IsAuthenticated]
     serializer_class = PostSerializer
-    parser_classes = [MultiPartParser, FormParser]
 
-    filter_backends = [
-        filters.OrderingFilter,
-        filters.SearchFilter,
-    ]
-    search_fields = [
-        'owner__username',
-        'header',
-    ]
-    ordering_fields = [
-        'likes_count',
-        'comments_count',
-        'likes__created_at',
-    ]
+    def get(self, request):
+        user = self.fetch_user_profile(request)
+        posts = self.fetch_user_posts(user)
+        serializer = self.serializer_class(posts)
+        return Response({serializer.data}, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        try:
+            serializer = self.serializer_class(data=request.data, context = {"request":request})
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response({
+                    "message": "Post Created",
+                    "data": serializer.data
+                }, status=status.HTTP_201_CREATED)
+        except Exception as exc:
+            return Response({
+                "message": "Error occured",
+                "error": str(exc).strip("\n")
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+    def destroy(self, request, pk):
+        instance = self.fetch_post_by_id(pk)
+        instance.delete()
+        return Response({
+            "message": "Post is deleted"
+        }, status=status.HTTP_204_NO_CONTENT)
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user, post_picture=self.request.data.get('post_picture'))
+    def fetch_post_by_id(self, pk):
+        return get_object_or_404(Post, id=pk)
+    
+    def fetch_user_profile(self, request):
+        get_object_or_404(UserProfile, user=request.user)
 
-class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsOwnerOrReadOnly]
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
+    def fetch_user_posts(self, user):
+        return get_list_or_404(Post, user=user)
+
