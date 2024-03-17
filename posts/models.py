@@ -1,45 +1,51 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
+from cloudinary_storage.storage import VideoMediaCloudinaryStorage\
+
+from profiles.models import UserProfile
+
 
 class Post(models.Model):
-    IMAGE_FILTER_CHOICES = [
-        ('normal', 'Normal'),
-        ('black_and_white', 'Black and White'),
-        ('sepia', 'Sepia'),
-        ('vintage', 'Vintage'),
-        ('grayscale', 'Grayscale'),
-        ('warm', 'Warm Tone'),
-        ('cool', 'Cool Tone'),
-        ('invert', 'Invert Colors'),
-        ('blur', 'Blur'),
-        ('sharpen', 'Sharpen'),
-    ]
-    header = models.CharField(max_length=255, blank=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
-    post_picture = models.ImageField(upload_to='post_images/', null=True, blank=True)
+    """
+    Users POST
+    """
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='posts')
     content = models.TextField()
+    media = models.ForeignKey("posts.PostMedia", verbose_name=_(""), on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
-    image_filter = models.CharField(
-        max_length=32,
-        choices=IMAGE_FILTER_CHOICES,
-        default='normal',
-        blank=True,
-        null=True
-    )
     class Meta:
         ordering = ['-created_at']
 
     def __str__(self):
         return f"Post by {self.id} at {self.header}"
+    
 
-        blank=True,
+class PostMedia(models.Model):
+    """
+    Image Post
+    """
+    image = models.ImageField(upload_to='post_images/', null=True, blank=True)
+    video = models.ImageField(upload_to='post_images/', storage=VideoMediaCloudinaryStorage(), null=True, blank=True)
 
-    @property
-    def like_count(self):
-        return self.likes.count()
+    class Meta:
+        ordering = ['-id']
 
-    @property
-    def comment_count(self):
-        return self.comments.count()
+    
+class Comments(models.Model):
+    """
+    Post Comment
+    """
+    post = models.OneToOneField(Post, on_delete=models.CASCADE)
+    comment = models.TextField(_("Users Comment"))
+    user = models.ForeignKey(UserProfile, verbose_name=_("Commented User"), on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class likes(models.Model):
+    """
+    Post Like
+    """
+    post = models.OneToOneField(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, verbose_name=_("Commented User"), on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
