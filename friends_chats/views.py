@@ -26,10 +26,10 @@ class CustomRegisterView(RegisterView):
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+        user = self.perform_create(serializer)
 
         return Response(
-            {"message": "Account Created successfully"},
+            {"message": "Account Created successfully", "id":user.id},
             status=status.HTTP_201_CREATED,
         )
     
@@ -40,8 +40,7 @@ class CustomRegisterView(RegisterView):
 
 class CustomLoginView(LoginView):
     def post(self, request, *args, **kwargs):
-        self.serializer = self.get_serializer(data=request.data,
-                                               context={'request': request})
+        self.serializer = self.get_serializer(data=request.data, context={'request': request})
         if self.serializer.is_valid():
             # Obtain the authenticated user
             user = self.serializer.validated_data['user']
