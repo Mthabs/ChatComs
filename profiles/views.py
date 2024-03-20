@@ -54,3 +54,18 @@ class CreateUserProfile(APIView):
                 return Response( serializer.data, status=status.HTTP_201_CREATED )
         except Exception as exc:
             return Response ({"message": f"Error occured {str(exc).strip("\n")}"}, status=status.HTTP_400_BAD_REQUEST)
+        
+class ProfileDetailView(APIView):
+    """
+    Instance of APIView to Create User Profile
+    """
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        userprofile = self.fetch_user_by_id(pk)
+        serializer = self.serializer_class(userprofile)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def fetch_user_by_id(self, pk):
+        return get_object_or_404(UserProfile, id=pk)

@@ -21,3 +21,7 @@ class UserProfile(models.Model):
     @property
     def fetch_username(self):
         return self.user.username
+    
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
