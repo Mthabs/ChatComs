@@ -1,30 +1,32 @@
 from rest_framework import serializers
 
-from posts.models import Post, PostMedia, Comments, likes
+from posts.models import Post, Comments, likes
 from profiles.serializers import CompactUserProfileSerializer
+from profiles.models import UserProfile
 
 
-class PostMediaSerializer(serializers.ModelSerializer):
-    """
-    ModelSerializer instance to handle Image Post related task.
-    """
-    image = serializers.FileField()
-    video = serializers.FileField()
-    class Meta:
-        model = PostMedia
-        fields = ["id", "image", "post", "video"]
-
-
-class PostSerializer(serializers.ModelSerializer):
+class PostGetSerializer(serializers.ModelSerializer):
     """
     ModelSerializer instance to handle Post related task.
     """
     user = CompactUserProfileSerializer()
-    media = PostMediaSerializer()
+    image = serializers.FileField()
+    video = serializers.FileField()
     class Meta:
         model = Post
-        fields = ["id", "user", "content", "created_at", "media"]
+        fields = ["id", "user", "content", "created_at", "image", "video"]
 
+
+class PostCreateSerializer(serializers.ModelSerializer):
+    """
+    ModelSerializer instance to handle Post related task.
+    """
+    user = serializers.PrimaryKeyRelatedField(queryset=UserProfile.objects.all())
+    image = serializers.FileField(required=False)
+    video = serializers.FileField(required=False)
+    class Meta:
+        model = Post
+        fields = ["id", "user", "content", "created_at", "image", "video"]
 
 class CommentSerializer(serializers.ModelSerializer):
     """

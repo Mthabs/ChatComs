@@ -1,17 +1,14 @@
 from django.contrib import admin
-from posts.models import PostMedia, Post, Comments, likes
+from posts.models import  Post, Comments, likes
 
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    readonly_fields = ['user', 'content', 'media']
-    list_display = ['id', 'user', 'content', 'media']
+    readonly_fields = ['user', 'content']
+    list_display = ['id', 'user', 'content']
+    fields = ['user', 'content', 'image', 'video']
     list_filter = ['user',]
 
-
-@admin.register(PostMedia)
-class PostMediaAdmin(admin.ModelAdmin):
-    readonly_fields = ['image', 'video']
 
 
 @admin.register(Comments)

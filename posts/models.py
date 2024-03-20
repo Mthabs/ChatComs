@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from cloudinary_storage.storage import VideoMediaCloudinaryStorage\
+from cloudinary_storage.storage import VideoMediaCloudinaryStorage
 
 from profiles.models import UserProfile
 
@@ -11,26 +11,16 @@ class Post(models.Model):
     """
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='posts')
     content = models.TextField()
-    media = models.ForeignKey("posts.PostMedia", verbose_name=_(""), on_delete=models.CASCADE, null=True)
+    image = models.ImageField(upload_to='post_images/', null=True, blank=True)
+    video = models.ImageField(upload_to='post_images/', storage=VideoMediaCloudinaryStorage(), null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-created_at']
 
     def __str__(self):
-        return f"Post by {self.id} at {self.header}"
+        return f"Post by {self.user}"
     
-
-class PostMedia(models.Model):
-    """
-    Image Post
-    """
-    image = models.ImageField(upload_to='post_images/', null=True, blank=True)
-    video = models.ImageField(upload_to='post_images/', storage=VideoMediaCloudinaryStorage(), null=True, blank=True)
-
-    class Meta:
-        ordering = ['-id']
-
     
 class Comments(models.Model):
     """
