@@ -28,4 +28,5 @@ urlpatterns = [
     path("friends/", include("friends.urls")),
     path("profile/", include("profiles.urls")),
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
+    path("post/", include("posts.urls")),
 ]

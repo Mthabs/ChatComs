@@ -1,12 +1,15 @@
 
 from dj_rest_auth.registration.views import RegisterView
 from .serializers import CustomRegisterSerializer
+from profiles.models import UserProfile
+from profiles.serializers import CompactUserProfileSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.response import Response
 from dj_rest_auth.views import LoginView
 from rest_framework.authtoken.models import Token
+from django.shortcuts import get_object_or_404
 
 
 @api_view()
@@ -48,6 +51,11 @@ class CustomLoginView(LoginView):
             token, created = Token.objects.get_or_create(user=user)
             # Optionally, you may want to check the created flag to handle cases
             # where the token already exists for the user
-            return Response({'token': token.key})
+            serializer = self.fetch_user_profile(user)
+            return Response({'token': token.key, "user":serializer.data})
         else:
             return Response(self.serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def fetch_user_profile(self, user):
+        userprofile = get_object_or_404(UserProfile, user=user)
+        return CompactUserProfileSerializer(userprofile)
