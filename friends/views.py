@@ -17,9 +17,13 @@ class ManageFollowerView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        follower_list = self.fetch_users_follower(request)
-        data = self.serializer_class(follower_list, many=True).data
-        return Response(data, status=status.HTTP_200_OK)
+        user_profile = UserProfile.objects.get(user=request.user)
+        try:
+            follower_list = get_list_or_404(UserFollowing, user=user_profile)
+            data = self.serializer_class(follower_list, many=True).data
+            return Response(data, status=status.HTTP_200_OK)
+        except:
+            return Response([], status=status.HTTP_200_OK)
     
     def post(self, request, pk):
         instance = self.fetch_follower(pk)
@@ -30,10 +34,6 @@ class ManageFollowerView(APIView):
         instance = self.fetch_follower(pk)
         instance.delete()
         return Response({"message":"Removed Follower"}, status=status.HTTP_204_NO_CONTENT)
-    
-    def fetch_users_follower(self, request):
-        user_profile = UserProfile.objects.get(user=request.user)
-        return get_list_or_404(UserFollowing, user=user_profile)
       
     def fetch_follower(self, pk):
         return get_object_or_404(UserFollowing, id=pk)
@@ -47,26 +47,27 @@ class ManageFollowingView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        following_list = self.fetch_users_following(request)
-        data = self.serializer_class(following_list, many=True).data
-        return Response(data, status=status.HTTP_200_OK)
+        try:
+            user_profile = UserProfile.objects.get(user=request.user)
+            following_list = get_list_or_404(UserFollowing, follower=user_profile)
+            data = self.serializer_class(following_list, many=True).data
+            return Response(data, status=status.HTTP_200_OK)
+        except:
+            return Response([], status=status.HTTP_200_OK)
     
     def post(self, request, fk):
         friend_instance = self.fetch_userprofile(fk)
+        user = self.fetch_current_user(request)
         try:
-            instance = UserFollowing.objects.create(user=friend_instance, follower=request.user)
-            return Response({"message": "Following Request is sent"})
+            instance = UserFollowing.objects.create(user=friend_instance, follower=user)
+            return Response({"message": "Following Request is sent", "id":instance.id}, status=status.HTTP_201_CREATED)
         except Exception as exc:
-            return Response({"message": f"Error Occurred {str(exc).strip("\n")}"})
+            return Response({"message": f"Error Occurred {str(exc).strip("\n")}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-    def destroy(self, request, pk):
+    def delete(self, request, pk):
         instance = self.fetch_following(pk)
         instance.delete()
         return Response({"message":"Removed Follower"}, status=status.HTTP_204_NO_CONTENT)
-    
-    def fetch_users_following(self, request):
-        user_profile = UserProfile.objects.get(user=request.user)
-        return get_list_or_404(UserFollowing, follower=user_profile)
     
     def fetch_following(self, pk):
         return get_object_or_404(UserFollowing, id=pk)
@@ -74,8 +75,24 @@ class ManageFollowingView(APIView):
     def fetch_userprofile(self, fk):
         return get_object_or_404(UserProfile, id=fk)
     
-
-
-        
-
+    def fetch_current_user(self, request):
+        return get_object_or_404(UserProfile, user=request.user)
     
+class CheckFollowingView(APIView):
+    """
+    API INSTANCE TO CHECK IF USER IS FOLLOWING
+    """
+    def get(self, request, fk):
+        current_user = self.fetch_current_user(request)
+        user = self.get_user_by_id(fk)
+        try:
+            relation = UserFollowing.objects.get(user=user, follower=current_user)
+            return Response({"id":relation.id, "follow":True}, status=status.HTTP_200_OK)
+        except:
+            return Response({"follow":False}, status=status.HTTP_200_OK)
+
+    def fetch_current_user(self, request):
+        return get_object_or_404(UserProfile, user=request.user)
+
+    def get_user_by_id(self, fk):
+        return get_object_or_404(UserProfile, id=fk)

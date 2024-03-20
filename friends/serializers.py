@@ -1,24 +1,23 @@
 from rest_framework import serializers
 
 from friends.models import UserFollowing
+from profiles.serializers import CompactUserProfileSerializer
 
 
 class FollowerListSerializer(serializers.ModelSerializer):
     """
     ModelSerializer Class to fetch list of User Followers
     """
-    name = serializers.ReadOnlyField(source='follower.name')
-    profile_picture = serializers.ReadOnlyField(source='follower.profile_picture')
+    follower = CompactUserProfileSerializer()
     class Meta:
         model = UserFollowing
-        fields = ['id', 'follower', 'profile_picture', 'name', 'status']
+        fields = ['id', 'follower']
 
 class FollowingListSerializer(serializers.ModelSerializer):
     """
     ModelSerializer Class to fetch list of User Following.
     """
-    name = serializers.ReadOnlyField(source='user.name')
-    profile_picture = serializers.ReadOnlyField(source='user.profile_picture')
+    user = CompactUserProfileSerializer()
     class Meta:
         model = UserFollowing
-        fields = ['id', 'user', 'profile_picture', 'name', 'status']
+        fields = ['id', 'user']
