@@ -40,7 +40,7 @@ REST_AUTH_SERIALIZERS = {
 
 SECRET_KEY = environ.get("SECRET_KEY")
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     "8000-mthabs-chatcoms-yfh6dmmi0lt.ws-eu110.gitpod.io",
