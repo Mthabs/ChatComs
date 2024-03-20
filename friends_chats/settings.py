@@ -60,6 +60,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://chatcomm-9a1693c74c82.herokuapp.com",
     "https://chatscomms-9973f48635e9.herokuapp.com",
+    "https://momentssne-67e815015d8b.herokuapp.com",
 ]
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
