@@ -39,3 +39,6 @@ class likes(models.Model):
     post = models.OneToOneField(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(UserProfile, verbose_name=_("Commented User"), on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [["post", "user"]]

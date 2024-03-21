@@ -1,9 +1,10 @@
 from django.urls import path
-from .views import PostView, GetAllPosts, UserPosts
+from .views import PostView, GetAllPosts, UserPosts, PostLikeView
 
 urlpatterns = [
     path('', PostView.as_view(), name='post-list'),
     path('<int:pk>/', PostView.as_view(), name='post-detail'),
     path('all/', GetAllPosts.as_view(), name="fetch-all-view"),
-    path('user/<int:fk>/', UserPosts.as_view(), name="user-specific-posts")
+    path('user/<int:fk>/', UserPosts.as_view(), name="user-specific-posts"),
+    path('like/<int:fk>/', PostLikeView.as_view(), name="post-like"),
 ]

@@ -9,6 +9,7 @@ class CreateUserProfileSerializer(serializers.ModelSerializer):
     """
     ModelSerializer instance to Create Userprofile details
     """
+    profile_picture = serializers.FileField(required=False)
     class Meta:
         model = UserProfile
         fields = "__all__"
@@ -25,7 +26,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ['id', 'profile_picture', 'followers_count', 'following_count', 'posts_count', 'full_name' ]
+        fields = ['id', 'profile_picture', 'followers_count', 'following_count', 'posts_count', 'full_name', 'status' ]
 
     def get_followers_count(self, obj):
         return UserFollowing.objects.filter(user=obj).count()

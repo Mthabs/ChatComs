@@ -9,7 +9,11 @@ from rest_framework import status
 from rest_framework.response import Response
 from dj_rest_auth.views import LoginView
 from rest_framework.authtoken.models import Token
+from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 @api_view()
@@ -59,3 +63,14 @@ class CustomLoginView(LoginView):
     def fetch_user_profile(self, user):
         userprofile = get_object_or_404(UserProfile, user=user)
         return CompactUserProfileSerializer(userprofile)
+    
+class CustomPasswordChange(APIView):
+    def patch(self, request):
+        try:
+            user = User.objects.get(id=request.user.id)
+            password = request.data["new_password1"]
+            user.set_password(password)
+            user.save()
+            return Response({"message":"Password Updated"})
+        except Exception as exc:
+            return Response({"Errors": str(exc).strip("\n")}, status=status.HTTP_400_BAD_REQUEST)

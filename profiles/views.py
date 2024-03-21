@@ -69,3 +69,28 @@ class ProfileDetailView(APIView):
 
     def fetch_user_by_id(self, pk):
         return get_object_or_404(UserProfile, id=pk)
+
+class ProfileEditView(APIView):
+    """
+    APIView instance to edit profile
+    """
+    serializer_class = CreateUserProfileSerializer
+    permission_classes = [IsAuthenticated]
+    def get(self, request, pk):
+        profile = self.fetch_profile_by_id(pk)
+        serializer = self.serializer_class(profile)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request, pk):
+        profile = self.fetch_profile_by_id(pk)
+        print(request.data)
+        serializer = self.serializer_class(instance=profile, data=request.data, partial=True)
+        try:
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_206_PARTIAL_CONTENT)
+        except Exception as exc:
+            return Response({"error":str(exc).strip("\n")})
+
+    def fetch_profile_by_id(self, pk):
+        return get_object_or_404(UserProfile, id=pk)

@@ -4,7 +4,7 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
-from .views import root_route, CustomRegisterView, CustomLoginView
+from .views import root_route, CustomRegisterView, CustomLoginView, CustomPasswordChange
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -25,6 +25,7 @@ urlpatterns = [
     path("api/docs/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
     path("auth/register/", CustomRegisterView.as_view(), name="register-view"),
     path("auth/token/", CustomLoginView.as_view(), name="Authentication-token"),
+    path("auth/password/change/", CustomPasswordChange.as_view(), name="password change"),
     path("friends/", include("friends.urls")),
     path("profile/", include("profiles.urls")),
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
