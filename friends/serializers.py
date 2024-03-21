@@ -8,10 +8,10 @@ class FollowerListSerializer(serializers.ModelSerializer):
     """
     ModelSerializer Class to fetch list of User Followers
     """
-    follower = CompactUserProfileSerializer()
+    user = CompactUserProfileSerializer(source="follower")
     class Meta:
         model = UserFollowing
-        fields = ['id', 'follower']
+        fields = ['id', 'user']
 
 class FollowingListSerializer(serializers.ModelSerializer):
     """
