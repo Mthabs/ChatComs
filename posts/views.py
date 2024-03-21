@@ -103,10 +103,11 @@ class PostLikeView(APIView):
         post = self.fetch_post(fk)
         userprofile = self.fetch_user_profile(request)
         try:
-            instance = Likes.objects.filter(post=post, user=userprofile).first()
-            return Response({"like":True}, status=status.HTTP_200_OK)
+            if Likes.objects.filter(post=post, user=userprofile).exists():
+                return Response({"like":True}, status=status.HTTP_200_OK)
         except Exception as exc:
-            return Response({"like":False}, status=status.HTTP_200_OK)
+            pass
+        return Response({"like":False}, status=status.HTTP_200_OK)
         
     def post(self, request, fk):
         post = self.fetch_post(fk)
