@@ -83,7 +83,6 @@ class ProfileEditView(APIView):
 
     def patch(self, request, pk):
         profile = self.fetch_profile_by_id(pk)
-        print(request.data)
         serializer = self.serializer_class(instance=profile, data=request.data, partial=True)
         try:
             if serializer.is_valid(raise_exception=True):
