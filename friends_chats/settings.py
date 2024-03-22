@@ -89,6 +89,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'drf_api_logger'
     "cloudinary_storage",
     "cloudinary",
     "rest_framework",
@@ -204,6 +205,8 @@ DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+DRF_API_LOGGER_DATABASE = True
 
 # Configure the logger to use stderr
 stderr_handler = logging.StreamHandler(sys.stderr)
