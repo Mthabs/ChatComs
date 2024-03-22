@@ -40,7 +40,7 @@ REST_AUTH_SERIALIZERS = {
 
 SECRET_KEY = environ.get("SECRET_KEY")
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     "8000-mthabs-chatcoms-yfh6dmmi0lt.ws-eu110.gitpod.io",
@@ -89,7 +89,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'drf_api_logger'
+    'drf_api_logger',
     "cloudinary_storage",
     "cloudinary",
     "rest_framework",
