@@ -45,7 +45,7 @@ DEBUG = False
 ALLOWED_HOSTS = [
     "8000-mthabs-chatcoms-yfh6dmmi0lt.ws-eu110.gitpod.io",
     "chatcom-ec4ad238849d.herokuapp.com",
-    "https://chatcom-backend-8579ef0ee515.herokuapp.com",
+    "chatcom-backend-8579ef0ee515.herokuapp.com",
     "chatcomdrfapi-40ddf4304b07.herokuapp.com",
     "localhost",
     "127.0.0.1",
