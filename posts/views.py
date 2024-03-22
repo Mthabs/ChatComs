@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404, get_list_or_404
 
 from posts.serializers import PostGetSerializer, PostCreateSerializer
-from posts.models import Post, likes as Likes
+from posts.models import Post,  Likes
 from profiles.models import UserProfile
 
 
@@ -129,7 +129,8 @@ class PostLikeView(APIView):
             instance = Likes.objects.get(user=userprofile, post=post)
             instance.delete()
         except:
-            return Response({"message":"Successfully unliked"})
+            print("Like object doesn't exist")
+        return Response({"message":"Successfully unliked"}, status=status.HTTP_204_NO_CONTENT)
 
     def fetch_post(self, fk):
         return get_object_or_404(Post, id=fk)

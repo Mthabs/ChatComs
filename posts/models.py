@@ -32,12 +32,12 @@ class Comments(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-class likes(models.Model):
+class Likes(models.Model):
     """
     Post Like
     """
     post = models.OneToOneField(Post, on_delete=models.CASCADE)
-    user = models.ForeignKey(UserProfile, verbose_name=_("Commented User"), on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, verbose_name=_("Liked User"), on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

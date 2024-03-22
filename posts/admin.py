@@ -1,5 +1,5 @@
 from django.contrib import admin
-from posts.models import  Post, Comments, likes
+from posts.models import  Post, Comments, Likes
 
 
 @admin.register(Post)
@@ -17,7 +17,7 @@ class CommentsAdmin(admin.ModelAdmin):
     list_display = ['id', 'post', 'user', 'comment', 'created_at']
 
 
-@admin.register(likes)
+@admin.register(Likes)
 class likesAdmin(admin.ModelAdmin):
     fields = ['post', 'user',  'created_at']
     list_display = ['id', 'post', 'user', 'created_at']

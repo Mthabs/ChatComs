@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from posts.models import Post, Comments, likes
+from posts.models import Post, Comments,  Likes
 from profiles.serializers import CompactUserProfileSerializer
 from profiles.models import UserProfile
 
@@ -12,9 +12,18 @@ class PostGetSerializer(serializers.ModelSerializer):
     user = CompactUserProfileSerializer()
     image = serializers.FileField()
     video = serializers.FileField()
+    likes_count = serializers.SerializerMethodField()
+    comments_count = serializers.SerializerMethodField()
+
     class Meta:
         model = Post
-        fields = ["id", "user", "content", "created_at", "image", "video"]
+        fields = ["id", "user", "content", "created_at", "image", "video", "likes_count", "comments_count"]
+
+    def get_likes_count(self, obj):
+        return Likes.objects.filter(post=obj).count()
+
+    def get_comments_count(self, obj):
+        return Comments.objects.filter(post=obj).count()
 
 
 class PostCreateSerializer(serializers.ModelSerializer):
@@ -44,5 +53,5 @@ class LikesSerializer(serializers.ModelSerializer):
     """
     user = CompactUserProfileSerializer()
     class Meta:
-        model = likes
+        model = Likes
         fields = ["id", "user"]
