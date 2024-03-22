@@ -55,7 +55,7 @@ CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ALLOW_CREDENTIALS = True
 
-extracted_url = re.match(r"^([^.]+)", os.environ.get("CLIENT_ORIGIN_DEV", ""), re.IGNORECASE).group(0)
+# extracted_url = re.match(r"^([^.]+)", os.environ.get("CLIENT_ORIGIN_DEV", ""), re.IGNORECASE).group(0)
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
@@ -64,9 +64,10 @@ CORS_ALLOWED_ORIGINS = [
     "https://momentssne-67e815015d8b.herokuapp.com",
 ]
 
-CORS_ALLOWED_ORIGIN_REGEXES = [
-        rf"{extracted_url}.(eu|us)\d+\.codeanyapp\.com$",
-    ]
+
+# CORS_ALLOWED_ORIGIN_REGEXES = [
+#         rf"{extracted_url}.(eu|us)\d+\.codeanyapp\.com$",
+#     ]
 
 CORS_ALLOW_HEADERS = [
     "accept",
