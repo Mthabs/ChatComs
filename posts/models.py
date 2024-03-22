@@ -9,7 +9,7 @@ class Post(models.Model):
     """
     Users POST
     """
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='posts')
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='userposts')
     content = models.TextField()
     image = models.ImageField(upload_to='post_images/', null=True, blank=True)
     video = models.ImageField(upload_to='post_images/', storage=VideoMediaCloudinaryStorage(), null=True, blank=True)
