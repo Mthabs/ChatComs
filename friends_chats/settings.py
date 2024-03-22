@@ -90,7 +90,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'drf_api_logger',
     "cloudinary_storage",
     "cloudinary",
     "rest_framework",
@@ -118,7 +117,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "drf_api_logger.middleware.api_logger_middleware.APILoggerMiddleware",
 ]
 ROOT_URLCONF = "friends_chats.urls"
 
@@ -207,16 +205,16 @@ DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-DRF_API_LOGGER_DATABASE = True
+# DRF_API_LOGGER_DATABASE = True
 
-# Configure the logger to use stderr
-stderr_handler = logging.StreamHandler(sys.stderr)
-stderr_handler.setLevel(logging.ERROR)
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-stderr_handler.setFormatter(formatter)
+# # Configure the logger to use stderr
+# stderr_handler = logging.StreamHandler(sys.stderr)
+# stderr_handler.setLevel(logging.ERROR)
+# formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+# stderr_handler.setFormatter(formatter)
 
-# Add the handler to the logger
-logger.addHandler(stderr_handler)
+# # Add the handler to the logger
+# logger.addHandler(stderr_handler)
 
-# Set the logger level
-logger.setLevel(logging.ERROR)
+# # Set the logger level
+# logger.setLevel(logging.ERROR)
