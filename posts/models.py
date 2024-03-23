@@ -26,19 +26,35 @@ class Comments(models.Model):
     """
     Post Comment
     """
-    post = models.OneToOneField(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
     comment = models.TextField(_("Users Comment"))
     user = models.ForeignKey(UserProfile, verbose_name=_("Commented User"), on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
 
 
 class Likes(models.Model):
     """
     Post Like
     """
-    post = models.OneToOneField(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(UserProfile, verbose_name=_("Liked User"), on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = [["post", "user"]]
+        ordering = ['-created_at']
+
+class CommentLikes(models.Model):
+    """
+    Comments Like
+    """
+    comment = models.ForeignKey(Comments, verbose_name=_("Comment Like"), on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, verbose_name=_("Liked User"), on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [["comment", "user"]]
+        ordering = ['-created_at']
