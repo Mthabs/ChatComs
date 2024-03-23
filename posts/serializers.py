@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from posts.models import Post, Comments,  Likes
+from posts.models import Post, Comments,  Likes, CommentLikes
 from profiles.serializers import CompactUserProfileSerializer
 from profiles.models import UserProfile
 
@@ -55,3 +55,28 @@ class LikesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Likes
         fields = ["id", "user"]
+
+class CommentSerializer(serializers.ModelSerializer):
+    """
+    ModelSerializer Instance to handle Create and Update operations
+    """
+    post = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all())
+    user = serializers.PrimaryKeyRelatedField(queryset=UserProfile.objects.all())
+
+    class Meta:
+        model = Comments
+        fields = "__all__"
+
+class CommentGetSerializer(serializers.ModelSerializer):
+    """
+    ModelSerializer instance to handle GET operations
+    """
+    user = CompactUserProfileSerializer()
+    likes_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Comments
+        fields = ["id", "comment", "user", "created_at", "likes_count"]
+
+    def get_likes_count(self, obj):
+        return CommentLikes.objects.filter(comment=obj).count()
