@@ -7,6 +7,8 @@ from django.shortcuts import get_list_or_404, get_object_or_404
 from friends.models import UserFollowing
 from friends.serializers import FollowerListSerializer, FollowingListSerializer
 from profiles.models import UserProfile
+from profiles.utils import search_user_profile
+from profiles.serializers import CompactUserProfileSerializer
 
 
 class ManageFollowerView(APIView):
@@ -96,3 +98,15 @@ class CheckFollowingView(APIView):
 
     def get_user_by_id(self, fk):
         return get_object_or_404(UserProfile, id=fk)
+    
+class UserProfileSearchAPIView(APIView):
+    def get(self, request):
+        query = request.query_params.get('query', None)
+        
+        if not query:
+            return Response("Query parameter 'query' is required", status=status.HTTP_400_BAD_REQUEST)
+
+        user_profiles = search_user_profile(query)
+        serializer = CompactUserProfileSerializer(user_profiles, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
