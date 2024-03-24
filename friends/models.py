@@ -11,17 +11,12 @@ FOLLOWER_STATUS = [
 class UserFollowing(models.Model):
     user = models.ForeignKey(UserProfile, related_name='User', on_delete=models.CASCADE)
     follower = models.ForeignKey(UserProfile, related_name='follower', on_delete=models.CASCADE)
-    status = models.CharField(_("Following status"), max_length=50, choices=FOLLOWER_STATUS)
+    status = models.CharField(_("Following status"), max_length=50, choices=FOLLOWER_STATUS, default="requested")
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-created_at']
         unique_together = ['user', 'follower']
-    
-    def save(self, *args, **kwargs):
-        if not self.status:
-            self.status="requested"
-        super(UserFollowing, self).save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.follower} is following {self.user}'
