@@ -22,7 +22,7 @@ class ManageFollowerView(APIView):
         # Returns List of followers, of logged in User.
         user_profile = UserProfile.objects.get(user=request.user)
         try:
-            follower_list = get_list_or_404(UserFollowing, user=user_profile)
+            follower_list = UserFollowing.objects.filter(user=user_profile, status="accepted")
             data = self.serializer_class(follower_list, many=True).data
             return Response(data, status=status.HTTP_200_OK)
         except:
@@ -56,7 +56,7 @@ class ManageFollowingView(APIView):
         # Returns List of following, of logged in User.
         try:
             user_profile = UserProfile.objects.get(user=request.user)
-            following_list = get_list_or_404(UserFollowing, follower=user_profile)
+            following_list = UserFollowing.objects.filter(follower=user_profile, status="accepted")
             data = self.serializer_class(following_list, many=True).data
             return Response(data, status=status.HTTP_200_OK)
         except:
@@ -70,7 +70,7 @@ class ManageFollowingView(APIView):
             instance = UserFollowing.objects.create(user=friend_instance, follower=user)
             return Response({"message": "Following Request is sent", "id":instance.id}, status=status.HTTP_201_CREATED)
         except Exception as exc:
-            return Response({"message": f"Error Occurred {str(exc).strip("\n")}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"message": f"Already a follower"}, status=status.HTTP_200_OK)
     
     def delete(self, request, pk):
         #Remove Following/ Unfollow user.
@@ -117,3 +117,26 @@ class UserProfileSearchAPIView(APIView):
         serializer = CompactUserProfileSerializer(user_profiles, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class FollowingRequestView(APIView):
+    """
+    Handle Following request
+    """
+    serializer_class = FollowerListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        #Returns List of request, to logged in user
+        user = self.fetch_current_user(request)
+        instances = UserFollowing.objects.filter(user=user, status="requested")
+        try:
+            serializer = self.serializer_class(instances, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as exc:
+            print(str(exc).strip("\n"))
+            return Response([], status=status.HTTP_200_OK)
+
+    def fetch_current_user(self, request):
+        return get_object_or_404(UserProfile, user=request.user)
+    
