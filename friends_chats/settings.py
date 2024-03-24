@@ -1,9 +1,7 @@
-import re
 import os
 import dj_database_url
 from pathlib import Path
 
-import sys
 import logging
 from os import environ
 
@@ -40,15 +38,11 @@ REST_AUTH_SERIALIZERS = {
 
 SECRET_KEY = environ.get("SECRET_KEY")
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
-    "8000-mthabs-chatcoms-yfh6dmmi0lt.ws-eu110.gitpod.io",
-    "chatcom-ec4ad238849d.herokuapp.com",
     "chatcom-backend-8579ef0ee515.herokuapp.com",
-    "chatcomdrfapi-40ddf4304b07.herokuapp.com",
     "localhost",
-    "127.0.0.1",
 ]
 #Allow for known ORIGINS
 CORS_ORIGIN_ALLOW_ALL = False
@@ -59,9 +53,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://chatcomm-9a1693c74c82.herokuapp.com",
-    "https://chatscomms-9973f48635e9.herokuapp.com",
-    "https://momentssne-67e815015d8b.herokuapp.com",
+    "https://chatcom-frontend-40488c6b8cb7.herokuapp.com/",
 ]
 
 
