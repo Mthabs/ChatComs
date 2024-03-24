@@ -53,7 +53,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://chatcom-frontend-40488c6b8cb7.herokuapp.com/",
+    "https://chatcom-frontend-40488c6b8cb7.herokuapp.com",
 ]
 
 
