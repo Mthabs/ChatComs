@@ -29,10 +29,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = ['id', 'profile_picture', 'followers_count', 'following_count', 'posts_count', 'full_name', 'status' ]
 
     def get_followers_count(self, obj):
-        return UserFollowing.objects.filter(user=obj).count()
+        return UserFollowing.objects.filter(user=obj, status="accepted").count()
 
     def get_following_count(self, obj):
-        return UserFollowing.objects.filter(follower=obj).count()
+        return UserFollowing.objects.filter(follower=obj, status="accepted").count()
     
     def get_posts_count(self, obj):
         return Post.objects.filter(user=obj).count()

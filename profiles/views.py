@@ -64,7 +64,7 @@ class ProfileDetailView(APIView):
 
     def get(self, request, pk):
         userprofile = self.fetch_user_by_id(pk)
-        serializer = self.serializer_class(userprofile)
+        serializer = self.serializer_class(userprofile, context={'request':request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def fetch_user_by_id(self, pk):
