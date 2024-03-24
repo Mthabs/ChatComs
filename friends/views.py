@@ -19,6 +19,7 @@ class ManageFollowerView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        # Returns List of followers, of logged in User.
         user_profile = UserProfile.objects.get(user=request.user)
         try:
             follower_list = get_list_or_404(UserFollowing, user=user_profile)
@@ -28,11 +29,14 @@ class ManageFollowerView(APIView):
             return Response([], status=status.HTTP_200_OK)
     
     def post(self, request, pk):
+        # Accepts Following request. 
         instance = self.fetch_follower(pk)
         instance.status = "accepted"
         instance.save()
+        return Response({"message": "Following request accepted"}, status=status.HTTP_202_ACCEPTED)
     
     def destroy(self, request, pk):
+        # Remove Follower, depreciated view.
         instance = self.fetch_follower(pk)
         instance.delete()
         return Response({"message":"Removed Follower"}, status=status.HTTP_204_NO_CONTENT)
@@ -49,6 +53,7 @@ class ManageFollowingView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        # Returns List of following, of logged in User.
         try:
             user_profile = UserProfile.objects.get(user=request.user)
             following_list = get_list_or_404(UserFollowing, follower=user_profile)
@@ -58,6 +63,7 @@ class ManageFollowingView(APIView):
             return Response([], status=status.HTTP_200_OK)
     
     def post(self, request, fk):
+        #View to follow a user.
         friend_instance = self.fetch_userprofile(fk)
         user = self.fetch_current_user(request)
         try:
@@ -67,6 +73,7 @@ class ManageFollowingView(APIView):
             return Response({"message": f"Error Occurred {str(exc).strip("\n")}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     def delete(self, request, pk):
+        #Remove Following/ Unfollow user.
         instance = self.fetch_following(pk)
         instance.delete()
         return Response({"message":"Removed Follower"}, status=status.HTTP_204_NO_CONTENT)
@@ -89,7 +96,7 @@ class CheckFollowingView(APIView):
         user = self.get_user_by_id(fk)
         try:
             relation = UserFollowing.objects.get(user=user, follower=current_user)
-            return Response({"id":relation.id, "follow":True}, status=status.HTTP_200_OK)
+            return Response({"id":relation.id, "status":relation.status}, status=status.HTTP_200_OK)
         except:
             return Response({"follow":False}, status=status.HTTP_200_OK)
 
