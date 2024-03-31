@@ -99,6 +99,7 @@ INSTALLED_APPS = [
     "profiles",
     "posts",
     "friends",
+    "usermessages",
     "drf_yasg",
 ]
 SITE_ID = 1
