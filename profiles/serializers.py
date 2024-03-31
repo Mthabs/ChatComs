@@ -13,6 +13,7 @@ class CreateUserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = "__all__"
+        
 
 class UserProfileSerializer(serializers.ModelSerializer):
     """
@@ -36,8 +37,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     
     def get_posts_count(self, obj):
         return Post.objects.filter(user=obj).count()
-
-    
+ 
     def get_full_name(self, obj):
         return obj.full_name
     
@@ -49,7 +49,12 @@ class CompactUserProfileSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
     class Meta:
         model = UserProfile
-        fields = ['id', 'full_name', 'profile_picture']
+        fields = ['id', 'full_name', 'profile_picture', 'last_seen']
 
     def get_full_name(self, obj):
         return obj.full_name
+    
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['last_seen'] = instance.last_seen.isoformat()
+        return data
