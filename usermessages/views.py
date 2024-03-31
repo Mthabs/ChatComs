@@ -30,11 +30,11 @@ class HandleChatView(APIView):
         instance = UserChat.objects.filter( Q(user_a=current_user, user_b=user) | Q(user_a=user, user_b=current_user) ).first()
         if not instance:
             instance = UserChat.objects.create(user_a=current_user, user_b=user)
-            serializer = UserChatGetSerializer(instance)
+            serializer = self.serializer_class(instance, context={'request': request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         else:
-            serializer = UserChatGetSerializer(instance)
+            serializer = self.serializer_class(instance, context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
 
     
